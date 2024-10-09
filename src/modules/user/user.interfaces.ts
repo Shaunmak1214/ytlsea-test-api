@@ -4,6 +4,7 @@ import { AccessAndRefreshTokens } from '../token/token.interfaces';
 
 export interface IUser {
   name: string;
+  phoneNumber: string;
   email: string;
   password: string;
   role: string;

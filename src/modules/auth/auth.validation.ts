@@ -5,6 +5,7 @@ import { NewRegisteredUser } from '../user/user.interfaces';
 const registerBody: Record<keyof NewRegisteredUser, any> = {
   email: Joi.string().required().email(),
   password: Joi.string().required().custom(password),
+  phoneNumber: Joi.string().required(),
   name: Joi.string().required(),
 };
 

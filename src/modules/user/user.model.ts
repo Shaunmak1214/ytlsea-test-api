@@ -13,6 +13,17 @@ const userSchema = new mongoose.Schema<IUserDoc, IUserModel>(
       required: true,
       trim: true,
     },
+    phoneNumber: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      validate(value: string) {
+        if (!validator.isMobilePhone(value)) {
+          throw new Error('Invalid phone number');
+        }
+      },
+    },
     email: {
       type: String,
       required: true,
