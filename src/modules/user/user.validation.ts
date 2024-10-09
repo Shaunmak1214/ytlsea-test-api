@@ -1,13 +1,12 @@
 import Joi from 'joi';
 import { password, objectId } from '../validate/custom.validation';
-import { NewCreatedUser } from './user.interfaces';
+import { NewRegisteredUser } from './user.interfaces';
 
-const createUserBody: Record<keyof NewCreatedUser, any> = {
+const createUserBody: Record<keyof NewRegisteredUser, any> = {
   email: Joi.string().required().email(),
   password: Joi.string().required().custom(password),
   phoneNumber: Joi.string().required(),
   name: Joi.string().required(),
-  role: Joi.string().required().valid('user', 'admin'),
 };
 
 export const createUser = {
@@ -47,5 +46,11 @@ export const updateUser = {
 export const deleteUser = {
   params: Joi.object().keys({
     userId: Joi.string().custom(objectId),
+  }),
+};
+
+export const getUserByPhoneNumber = {
+  body: Joi.object().keys({
+    phoneNumber: Joi.string().required(),
   }),
 };

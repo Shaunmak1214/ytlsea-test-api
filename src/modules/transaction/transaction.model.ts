@@ -35,18 +35,23 @@ const transactionSchema = new mongoose.Schema<ITransactionDoc, ITransactionModel
     },
     errorCode: {
       type: String,
-      required: true,
+      required: false,
       trim: true,
     },
     errorMessage: {
       type: String,
-      required: true,
+      required: false,
       trim: true,
     },
     tokenId: {
       type: String,
       ref: 'Token',
       required: true,
+      trim: true,
+    },
+    to: {
+      type: String,
+      required: false,
       trim: true,
     },
   },
@@ -58,6 +63,20 @@ const transactionSchema = new mongoose.Schema<ITransactionDoc, ITransactionModel
 // add plugin that converts mongoose to json
 transactionSchema.plugin(toJSON);
 transactionSchema.plugin(paginate);
+
+/**
+ * Check if transaction id is taken
+ * @param {string} transactionId - The transaction id
+ * @param {ObjectId} [excludeTransactionId] - The id of the transaction to be excluded
+ * @returns {Promise<boolean>}
+ */
+transactionSchema.static(
+  'isTransactionIdTaken',
+  async function (transactionId: string, excludeTransactionId: mongoose.ObjectId): Promise<boolean> {
+    const transaction = await this.findOne({ transactionId, _id: { $ne: excludeTransactionId } });
+    return !!transaction;
+  }
+);
 
 const Transaction = mongoose.model<ITransactionDoc, ITransactionModel>('Transaction', transactionSchema);
 

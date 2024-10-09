@@ -48,6 +48,13 @@ export const queryUsers = async (filter: Record<string, any>, options: IOptions)
 export const getUserById = async (id: mongoose.Types.ObjectId): Promise<IUserDoc | null> => User.findById(id);
 
 /**
+ * Get user by phone number
+ * @param {string} phoneNumber
+ * @returns {Promise<IUserDoc | null>}
+ */
+export const getUserByPhoneNumber = async (phoneNumber: string): Promise<IUserDoc | null> => User.findOne({ phoneNumber });
+
+/**
  * Get user by email
  * @param {string} email
  * @returns {Promise<IUserDoc | null>}

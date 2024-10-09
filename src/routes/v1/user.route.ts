@@ -7,8 +7,10 @@ const router: Router = express.Router();
 
 router
   .route('/')
-  .post(auth('manageUsers'), validate(userValidation.createUser), userController.createUser)
+  .post(validate(userValidation.createUser), userController.createUser)
   .get(auth('getUsers'), validate(userValidation.getUsers), userController.getUsers);
+
+router.route('/by-phone-number').post(validate(userValidation.getUserByPhoneNumber), userController.getUserByPhoneNumber);
 
 router
   .route('/:userId')

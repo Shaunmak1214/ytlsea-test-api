@@ -7,13 +7,15 @@ export interface ITransaction {
   transactionId: string;
   transactionType: string; // "reload" or "transfer"
   status: string; // "pending", "success", "cancelled" or "failed"
-  errorCode: string;
-  errorMessage: string;
+  errorCode?: string;
+  errorMessage?: string;
   tokenId: string;
+  to?: string; // phone number
 }
 
 export interface ITransactionDoc extends ITransaction, Document {}
 
 export interface ITransactionModel extends mongoose.Model<ITransactionDoc> {
+  isTransactionIdTaken(transactionId: string, excludeTransactionId?: mongoose.ObjectId): Promise<boolean>;
   paginate(filter: Record<string, any>, options: Record<string, any>): Promise<QueryResult>;
 }

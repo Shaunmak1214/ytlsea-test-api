@@ -4,6 +4,7 @@ import Account from './account.model';
 import ApiError from '../errors/ApiError';
 import { IAccount, IAccountDoc } from './account.interfaces';
 import { QueryResult } from '../paginate/paginate';
+import { generateAccountToken } from '../utils/transactions';
 
 /**
  * Create a account
@@ -14,7 +15,30 @@ export const createAccount = async (account: IAccount): Promise<IAccountDoc> => 
   if (await Account.isAccountNumberTaken(account.accountNumber)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Account number already taken');
   }
-  return Account.create(account);
+
+  // create token for account
+  const token = generateAccountToken();
+
+  const accountCreated = await Account.create({
+    ...account,
+    token,
+  });
+
+  if (!accountCreated.preferred) {
+    return accountCreated;
+  }
+  const preferredAccounts = await Account.find({ preferred: true, user: account.user });
+
+  const accountsToUnPreferred = preferredAccounts.filter((acc: IAccountDoc) => acc.id !== accountCreated.id);
+
+  await Promise.all(
+    accountsToUnPreferred.map(async (acc: IAccountDoc) => {
+      Object.assign(acc, { preferred: false });
+      await acc.save();
+    })
+  );
+
+  return accountCreated;
 };
 
 /**
@@ -35,6 +59,14 @@ export const queryAccounts = async (filter: Record<string, any>, options: Record
  */
 export const getAccountByUserId = async (userId: mongoose.Types.ObjectId): Promise<IAccountDoc | null> =>
   Account.findOne({ userId });
+
+/**
+ * Get accounts by user id
+ * @param {mongoose.Types.ObjectId} userId
+ * @returns {Promise<IAccountDoc | null>}
+ */
+export const getAccountsByUserId = async (userId: mongoose.Types.ObjectId): Promise<IAccountDoc[] | null> =>
+  Account.find({ user: userId });
 
 /**
  * Get account by id

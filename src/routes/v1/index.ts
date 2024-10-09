@@ -2,6 +2,8 @@ import express, { Router } from 'express';
 import authRoute from './auth.route';
 import docsRoute from './swagger.route';
 import userRoute from './user.route';
+import accountRoute from './account.route';
+import transactionRoute from './transaction.route';
 import config from '../../config/config';
 
 const router = express.Router();
@@ -19,6 +21,14 @@ const defaultIRoute: IRoute[] = [
   {
     path: '/users',
     route: userRoute,
+  },
+  {
+    path: '/accounts',
+    route: accountRoute,
+  },
+  {
+    path: '/transactions',
+    route: transactionRoute,
   },
 ];
 

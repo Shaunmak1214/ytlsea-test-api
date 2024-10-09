@@ -9,9 +9,7 @@ export interface IAccount {
   balance: number;
   isActive: boolean;
   token: string;
-  tokenExpiry: string;
   provider: string;
-  limit: string;
   preferred: string;
   authorizedAmount: number;
   user: mongoose.Types.ObjectId;

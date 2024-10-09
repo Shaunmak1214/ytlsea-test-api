@@ -31,6 +31,7 @@ const accountSchema = new mongoose.Schema<IAccountDoc, IAccountModel>(
       type: Number,
       required: true,
       min: 0,
+      default: 0,
     },
     isActive: {
       type: Boolean,
@@ -38,20 +39,10 @@ const accountSchema = new mongoose.Schema<IAccountDoc, IAccountModel>(
     },
     token: {
       type: String,
-      required: true,
-      trim: true,
-    },
-    tokenExpiry: {
-      type: String,
-      required: true,
+      required: false,
       trim: true,
     },
     provider: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    limit: {
       type: String,
       required: true,
       trim: true,
