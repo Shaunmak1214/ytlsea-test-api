@@ -58,7 +58,7 @@ export const queryAccounts = async (filter: Record<string, any>, options: Record
  * @returns {Promise<IAccountDoc | null>}
  */
 export const getAccountByUserId = async (userId: mongoose.Types.ObjectId): Promise<IAccountDoc | null> =>
-  Account.findOne({ userId });
+  Account.findOne({ user: userId, preferred: 'true' });
 
 /**
  * Get accounts by user id

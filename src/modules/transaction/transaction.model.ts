@@ -10,6 +10,9 @@ const transactionSchema = new mongoose.Schema<ITransactionDoc, ITransactionModel
       ref: 'Account',
       required: true,
     },
+    description: {
+      type: String,
+    },
     amount: {
       type: Number,
       required: true,
@@ -53,6 +56,11 @@ const transactionSchema = new mongoose.Schema<ITransactionDoc, ITransactionModel
       type: String,
       required: false,
       trim: true,
+    },
+    createdAt: {
+      type: Date,
+      required: true,
+      default: Date.now,
     },
   },
   {

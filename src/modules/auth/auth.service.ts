@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import Token from '../token/token.model';
 import ApiError from '../errors/ApiError';
 import tokenTypes from '../token/token.types';
-import { getUserByEmail, getUserById, updateUserById } from '../user/user.service';
+import { getUserByEmail, getUserById, getUserByPhoneNumber, updateUserById } from '../user/user.service';
 import { IUserDoc, IUserWithTokens } from '../user/user.interfaces';
 import { generateAuthTokens, verifyToken } from '../token/token.service';
 
@@ -17,6 +17,14 @@ export const loginUserWithEmailAndPassword = async (email: string, password: str
   const user = await getUserByEmail(email);
   if (!user || !(await user.isPasswordMatch(password))) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
+  }
+  return user;
+};
+
+export const loginUserWithPhoneNumberAndPassword = async (phoneNumber: string, password: string): Promise<IUserDoc> => {
+  const user = await getUserByPhoneNumber(phoneNumber);
+  if (!user || !(await user.isPasswordMatch(password))) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect phone number or password');
   }
   return user;
 };

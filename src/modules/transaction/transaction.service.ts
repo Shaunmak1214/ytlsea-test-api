@@ -21,7 +21,7 @@ export const createTransaction = async (transaction: ITransaction): Promise<ITra
   }
 
   // check account balance
-  const account = await accountService.getAccountById(new mongoose.Types.ObjectId(transaction.account));
+  const account = await accountService.getAccountById(transaction.account);
   if (!account) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Account not found');
   }
@@ -92,6 +92,19 @@ export const queryTransactions = async (filter: Record<string, any>, options: Re
  */
 export const getTransactionById = async (id: mongoose.Types.ObjectId): Promise<ITransactionDoc | null> =>
   Transaction.findById(id);
+
+/**
+ * Get transactions by user id
+ * @param {mongoose.Types.ObjectId} userId
+ * @returns {Promise<ITransactionDoc | null>}
+ */
+export const getTransactionsByAccountId = async (accId: mongoose.Types.ObjectId): Promise<ITransactionDoc[] | null> =>
+  // @ts-ignore
+  (await Transaction.find({ account: accId }).sort({ createdAt: -1 })).map((t: ITransactionDoc) => ({
+    ...t.toObject(),
+    id: t._id.toString(),
+    createdAt: t.createdAt && t.createdAt.toISOString(),
+  }));
 
 /**
  * Update transaction by id

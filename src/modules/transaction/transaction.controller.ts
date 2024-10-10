@@ -5,6 +5,7 @@ import catchAsync from '../utils/catchAsync';
 import * as transactionService from './transaction.service';
 import * as accountService from '../account/account.service';
 import ApiError from '../errors/ApiError';
+import Account from '../account/account.model';
 
 export const createTransaction = catchAsync(async (req: Request, res: Response) => {
   const { user } = req;
@@ -13,7 +14,7 @@ export const createTransaction = catchAsync(async (req: Request, res: Response) 
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate');
   }
 
-  const account = await accountService.getAccountById(new mongoose.Types.ObjectId(req.body.account));
+  const account = await accountService.getAccountByAccountNumber(req.body.account);
   if (!account) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Account not found');
   }
@@ -22,7 +23,11 @@ export const createTransaction = catchAsync(async (req: Request, res: Response) 
     throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden');
   }
 
-  const transaction = await transactionService.createTransaction(req.body);
+  const transaction = await transactionService.createTransaction({
+    ...req.body,
+    account: account._id,
+    tokenId: account.token,
+  });
   res.status(httpStatus.CREATED).send(transaction);
 });
 
@@ -31,6 +36,25 @@ export const getTransactions = catchAsync(async (req: Request, res: Response) =>
   const options = req.query;
   const result = await transactionService.queryTransactions(filter, options);
   res.send(result);
+});
+
+export const getTransactionsByUser = catchAsync(async (req: Request, res: Response) => {
+  const { user } = req;
+
+  if (!user) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate');
+  }
+
+  const account = await Account.findOne({ user: user._id, preferred: true });
+  if (!account) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Account not found');
+  }
+
+  const transactions = await transactionService.getTransactionsByAccountId(account._id);
+  if (!transactions) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Transaction not found');
+  }
+  res.send(transactions);
 });
 
 export const getTransaction = catchAsync(async (req: Request, res: Response) => {

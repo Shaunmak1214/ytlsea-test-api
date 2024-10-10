@@ -3,7 +3,8 @@ import { QueryResult } from '../paginate/paginate';
 
 export interface ITransaction {
   account: mongoose.Types.ObjectId;
-  amount: number; // in cents
+  description?: string;
+  amount: number;
   transactionId: string;
   transactionType: string; // "reload" or "transfer"
   status: string; // "pending", "success", "cancelled" or "failed"
@@ -11,6 +12,7 @@ export interface ITransaction {
   errorMessage?: string;
   tokenId: string;
   to?: string; // phone number
+  createdAt?: Date;
 }
 
 export interface ITransactionDoc extends ITransaction, Document {}

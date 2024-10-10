@@ -45,7 +45,7 @@ export const getAccountByUser = catchAsync(async (req: Request, res: Response) =
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate');
   }
 
-  const account = await accountService.getAccountsByUserId(user._id);
+  const account = await accountService.getAccountByUserId(user._id);
   if (!account) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Account not found');
   }

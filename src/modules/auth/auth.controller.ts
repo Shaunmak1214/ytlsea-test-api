@@ -13,8 +13,8 @@ export const register = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const login = catchAsync(async (req: Request, res: Response) => {
-  const { email, password } = req.body;
-  const user = await authService.loginUserWithEmailAndPassword(email, password);
+  const { phoneNumber, password } = req.body;
+  const user = await authService.loginUserWithPhoneNumberAndPassword(phoneNumber, password);
   const tokens = await tokenService.generateAuthTokens(user);
   res.send({ user, tokens });
 });

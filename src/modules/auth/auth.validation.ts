@@ -15,7 +15,7 @@ export const register = {
 
 export const login = {
   body: Joi.object().keys({
-    email: Joi.string().required(),
+    phoneNumber: Joi.string().required(),
     password: Joi.string().required(),
   }),
 };
