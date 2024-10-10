@@ -50,7 +50,7 @@ export const createTransaction = async (transaction: ITransaction): Promise<ITra
   });
 
   // simulate paynet error
-  const errorCode = randomErrorCode(25);
+  const errorCode = randomErrorCode(process.env['PAY_NET_FAILURE_RATE'] ? Number(process.env['PAY_NET_FAILURE_RATE']) : 0);
 
   if (errorCode !== payNetResCodes['00']) {
     Object.assign(transactionCreated, { status: 'failed', errorCode, errorMessage: errorCode });
